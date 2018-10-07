@@ -7,11 +7,13 @@ import {
   About,
   Elsewhere,
   NetworkStats,
-  PageBanner,
   ProfileAvatar,
   ProfileTabs,
   Skills
 } from './components';
+
+import PageBanner from '../../components/PageBanner';
+import ProgressBar from '../../components/ProgressBarSimple';
 
 import {
   userInfoSelector,
@@ -22,6 +24,44 @@ import {
 import { ipfsToHttp } from 'utils/helpers';
 import { profileUISelector } from './selectors';
 import { actions } from './reducer';
+
+const isEmptyProperty = property => {
+  return (
+    property === undefined ||
+    property === null ||
+    (typeof property === 'object' && Object.keys(property).length === 0) ||
+    (typeof property === 'string' && property.trim().length === 0)
+  );
+};
+
+const getProfileCompletePercent = user => {
+  const userElsewhereInfo = {
+    github: user.github,
+    linkedin: user.linkedin,
+    twitter: user.twitter,
+    website: user.website
+  };
+
+  const userElsewhereValues = Object.values(userElsewhereInfo).filter(
+    value => value
+  ).length;
+
+  const userMinRequiredInfo = {
+    name: user.name,
+    organization: user.organization,
+    languages: user.languages,
+    skills: user.skills,
+    email: user.email,
+    elsewhere: userElsewhereValues > 0 ? userElsewhereValues : undefined
+  };
+
+  const keys = Object.keys(userMinRequiredInfo).length;
+  const nonEmptyValues = Object.values(userMinRequiredInfo).filter(
+    value => !isEmptyProperty(value)
+  ).length;
+
+  return Math.round((nonEmptyValues / keys) * 100);
+};
 
 const ProfileDetailsComponent = props => {
   const {
@@ -41,35 +81,20 @@ const ProfileDetailsComponent = props => {
 
   let bodyClass;
 
-  let userMinRequiredInfo = {
-    name: user.name,
-    organization: user.organization,
-    languages: user.languages,
-    skills: user.skills,
-    email: user.email
-  };
+  const percentageComplete = getProfileCompletePercent(user);
 
-  let userElsewhereInfo = {
-    github: user.github,
-    linkedin: user.linkedin,
-    twitter: user.twitter,
-    website: user.website
-  };
-
-  let userElsewhereValues = Object.values(userElsewhereInfo).filter(
-    value => value
-  ).length;
-
-  let pageBanner = (
+  const pageBanner = (
     <React.Fragment>
       <PageBanner
-        info={userMinRequiredInfo}
         onEdit={onEdit}
         onClose={onCloseProgressBar}
-        elsewhere={userElsewhereValues >= 0 ? userElsewhereValues : undefined}
-        mainHeading="Profile Strength"
         editHeading="Profile"
-      />
+      >
+        <ProgressBar
+          mainHeading="Profile Strength"
+          percentage={percentageComplete}
+        />
+      </PageBanner>
     </React.Fragment>
   );
 
@@ -143,7 +168,7 @@ const ProfileDetailsComponent = props => {
 
   return (
     <div>
-      {showBanner && pageBanner}
+      {showBanner && percentageComplete < 100 && pageBanner}
       <div className={`col-xs-12 fullHeight ${bodyClass}`}>{body}</div>
     </div>
   );
