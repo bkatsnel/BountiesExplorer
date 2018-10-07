@@ -7,6 +7,7 @@ import {
   About,
   Elsewhere,
   NetworkStats,
+  PageBanner,
   ProfileAvatar,
   ProfileTabs,
   Skills
@@ -32,10 +33,45 @@ const ProfileDetailsComponent = props => {
     toggleNetworkSwitch,
     currentTab,
     setActiveTab,
-    setReviewsModalVisible
+    setReviewsModalVisible,
+    onEdit,
+    onCloseProgressBar,
+    showBanner
   } = props;
 
   let bodyClass;
+
+  let userMinRequiredInfo = {
+    name: user.name,
+    organization: user.organization,
+    languages: user.languages,
+    skills: user.skills,
+    email: user.email
+  };
+
+  let userElsewhereInfo = {
+    github: user.github,
+    linkedin: user.linkedin,
+    twitter: user.twitter,
+    website: user.website
+  };
+
+  let userElsewhereValues = Object.values(userElsewhereInfo).filter(
+    value => value
+  ).length;
+
+  let pageBanner = (
+    <React.Fragment>
+      <PageBanner
+        info={userMinRequiredInfo}
+        onEdit={onEdit}
+        onClose={onCloseProgressBar}
+        elsewhere={userElsewhereValues >= 0 ? userElsewhereValues : undefined}
+        mainHeading="Profile Strength"
+        editHeading="Profile"
+      />
+    </React.Fragment>
+  );
 
   let body = (
     <React.Fragment>
@@ -105,10 +141,15 @@ const ProfileDetailsComponent = props => {
     body = <Loader color="blue" size="medium" />;
   }
 
-  return <div className={`col-xs-12 fullHeight ${bodyClass}`}>{body}</div>;
+  return (
+    <div>
+      {showBanner && pageBanner}
+      <div className={`col-xs-12 fullHeight ${bodyClass}`}>{body}</div>
+    </div>
+  );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   const userInfo = userInfoSelector(state);
   const loadedUserInfo = loadedUserInfoSelector(state);
   const loadedUser = loadedUserSelector(state);
@@ -121,7 +162,8 @@ const mapStateToProps = state => {
     userStats,
     switchValue: profileUI.switchValue,
     currentTab: profileUI.currentTab,
-    loadedUserInfo
+    loadedUserInfo,
+    onEditProfile: props.onEditProfile
   };
 };
 

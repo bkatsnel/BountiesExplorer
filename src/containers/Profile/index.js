@@ -25,7 +25,8 @@ class ProfileComponent extends React.Component {
 
     this.state = {
       mobileFilterVisible: false,
-      position: 'relative'
+      position: 'relative',
+      showBanner: true
     };
 
     const {
@@ -139,6 +140,14 @@ class ProfileComponent extends React.Component {
     }
   };
 
+  onEditProfile = () => {
+    this.props.history.push('/settings');
+  };
+
+  onCloseProgressBar = () => {
+    this.setState({ showBanner: false });
+  };
+
   render() {
     const { error, loaded, user, showFilterNav } = this.props;
     const { position } = this.state;
@@ -156,7 +165,11 @@ class ProfileComponent extends React.Component {
       <div className={styles.profileContainer}>
         <SEOHeader user={user} />
         <div className={`${styles.profileDetails}`}>
-          <ProfileDetails />
+          <ProfileDetails
+            onEdit={this.onEditProfile}
+            onCloseProgressBar={this.onCloseProgressBar}
+            showBanner={this.state.showBanner}
+          />
         </div>
         <div className={styles.profileBountiesContainer}>
           <div className={styles.profileBounties}>
