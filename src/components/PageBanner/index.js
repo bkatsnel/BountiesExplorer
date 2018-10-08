@@ -1,18 +1,33 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PageBanner.css';
 
 const PageBanner = props => {
-  const { editHeading, onEdit, onClose } = props;
+  const { height, width, background } = props;
+
+  const customStyles = {
+    height: height,
+    width: width,
+    backgroundColor: background
+  };
 
   return (
-    <div className="navBar">
+    <div className="pageBanner" style={customStyles}>
       {props.children}
-      <span className="on_edit_text" onClick={onEdit}>
-        Edit {editHeading}
-      </span>
-      <span className="float_right" onClick={onClose} />
     </div>
   );
+};
+
+PageBanner.propTypes = {
+  height: PropTypes.string,
+  width: PropTypes.string,
+  background: PropTypes.string
+};
+
+PageBanner.defaultProps = {
+  height: '25px',
+  width: '100%',
+  background: 'lightgrey'
 };
 
 export default PageBanner;

@@ -1,29 +1,38 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import './ProgressBar.css';
 
 const ProgressBar = props => {
-  const { mainHeading, percentage } = props;
+  const { heading, percentage, showPct, width } = props;
 
   return (
-    <Fragment>
-      <span className="main_hdr">{mainHeading}</span>
-      <div className="progress-bar">
+    <div className="progress-bar-all">
+      {heading && <span className="progress-bar-hdr">{heading}</span>}
+      <div className="progress-bar" style={{ width: width }}>
         <Filler percentage={percentage} />
       </div>
-      <span className="pct_indicator">{percentage}%</span>
-    </Fragment>
+      {showPct && <span className="progress-bar-pct">{percentage}%</span>}
+    </div>
   );
 };
 
 const Filler = ({ percentage }) => {
-  return <div className="filler" style={{ width: `${percentage}%` }} />;
+  return (
+    <div className="progress-bar-filler" style={{ width: `${percentage}%` }} />
+  );
 };
 
 ProgressBar.propTypes = {
-  mainHeading: PropTypes.string.isRequired,
-  percentage: PropTypes.number.isRequired
+  heading: PropTypes.string,
+  percentage: PropTypes.number.isRequired,
+  showPct: PropTypes.bool,
+  width: PropTypes.string
+};
+
+ProgressBar.defaultProps = {
+  showPct: true,
+  width: '350px'
 };
 
 export default ProgressBar;

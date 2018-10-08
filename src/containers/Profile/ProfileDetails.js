@@ -12,8 +12,7 @@ import {
   Skills
 } from './components';
 
-import PageBanner from '../../components/PageBanner';
-import ProgressBar from '../../components/ProgressBarSimple';
+import { Button, PageBanner, ProgressBar } from 'components';
 
 import {
   userInfoSelector,
@@ -85,15 +84,21 @@ const ProfileDetailsComponent = props => {
 
   const pageBanner = (
     <React.Fragment>
-      <PageBanner
-        onEdit={onEdit}
-        onClose={onCloseProgressBar}
-        editHeading="Profile"
-      >
-        <ProgressBar
-          mainHeading="Profile Strength"
-          percentage={percentageComplete}
-        />
+      <PageBanner>
+        <span style={{ width: '50px' }} />
+        <ProgressBar heading="Profile Strength" percentage={75} />
+        <span style={{ width: '20px' }} />
+        <span className="width-stretch">
+          <Button onClick={onEdit} type="link">
+            Edit Profile
+          </Button>
+          <span style={{ float: 'right' }}>
+            <Button onClick={onCloseProgressBar} type="link">
+              x
+            </Button>
+            <span style={{ width: '30px' }} />
+          </span>
+        </span>
       </PageBanner>
     </React.Fragment>
   );
