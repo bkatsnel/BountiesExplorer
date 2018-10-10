@@ -86,7 +86,10 @@ const ProfileDetailsComponent = props => {
     <React.Fragment>
       <PageBanner>
         <span style={{ width: '50px' }} />
-        <ProgressBar heading="Profile Strength" percentage={75} />
+        <ProgressBar
+          heading="Profile Strength"
+          percentage={percentageComplete}
+        />
         <span style={{ width: '20px' }} />
         <span className="width-stretch">
           <Button onClick={onEdit} type="link">
